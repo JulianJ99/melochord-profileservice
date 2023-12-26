@@ -1,0 +1,50 @@
+version: '3.7'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: <admin-user>
+      MONGO_INITDB_ROOT_PASSWORD: <admin-password>
+      MONGO_INITDB_DATABASE: <database to create>
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+  
+  profileservice:
+    depends_on:
+      - mongodb
+    build:
+      context: ./server
+      dockerfile: ./Dockerfile
+    container_name: profileservice
+    restart: always
+    env_file: ./.env
+    volumes:
+      - ./server:/server  
+    image: profileservice
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+    extra_hosts:
+      - localhost:127.0.0.1
+      - host.docker.internal:172.17.0.1      
+    networks: 
+      - mongobackend   
+      - frontend
+
+volumes:
+  mongodb:
+  server: 
+
+networks:
+  mongobackend:
+  frontend:
+    name: frontend
+    external: true
