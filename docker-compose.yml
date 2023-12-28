@@ -13,6 +13,8 @@ services:
       - 27017:27017
     volumes:
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    cpu_period: 50000
+    cpu_quota: 25000    
   
   profileservice:
     depends_on:
@@ -38,7 +40,9 @@ services:
     networks: 
       - mongobackend   
       - frontend
-
+    cpu_period: 50000
+    cpu_quota: 25000  
+    
 volumes:
   mongodb:
   server: 
