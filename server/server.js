@@ -1,12 +1,11 @@
 const express = require("express");
-
+const app = express();
 const cors = require("cors");
 require("dotenv").config();
-
 const bodyParser = require("body-parser");
 
+const profile_model = require('./models/profile.model')
 
-const app = express();
 
 app.use(express.json());
 const corsOptions ={
@@ -30,7 +29,26 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to the profile page." });
+  profile_model.getProfiles()
+  .then(response => {
+    res.status(200).send(response);
+  })
+  .catch(error => {
+    res.status(500).send(error);
+  })
+});
+
+app.put("/profiles/:id", (req, res) => {
+  const profileid = req.params.id;
+  const body = req.body;
+  song_model
+    .updateProfile(profileid, body)
+    .then((response) => {
+      res.status(200).send(response);
+    })
+    .catch((error) => {
+      res.status(500).send(error);
+    });
 });
 
 const db = require("./models");
