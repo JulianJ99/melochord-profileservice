@@ -27,15 +27,25 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
+const db = require("./models");
+db.mongoose
+  .connect(db.url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(() => {
+    console.log("Connected to the database!");
+  })
+  .catch(err => {
+    console.log("Cannot connect to the database!", err);
+    process.exit();
+  });
+
+require("./routes/profiles.routes")(app);
+
 // simple route
 app.get("/", (req, res) => {
-  profile_model.getProfiles()
-  .then(response => {
-    res.status(200).send(response);
-  })
-  .catch(error => {
-    res.status(500).send(error);
-  })
+  res.json({ message: "Welcome to the profile service." });
 });
 
 app.put("/profiles/:id", (req, res) => {
@@ -51,19 +61,7 @@ app.put("/profiles/:id", (req, res) => {
     });
 });
 
-const db = require("./models");
-db.mongoose
-  .connect(db.url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
-  .then(() => {
-    console.log("Connected to the database!");
-  })
-  .catch(err => {
-    console.log("Cannot connect to the database!", err);
-    process.exit();
-  });
+
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8081;

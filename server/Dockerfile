@@ -16,10 +16,8 @@ WORKDIR /data
 
 # Expose ports.
 #   - 27017: process
-#   - 28017: http
 #   - 8081: Backend
 EXPOSE 27017
-EXPOSE 28017
 
 FROM node:20
 WORKDIR /server
