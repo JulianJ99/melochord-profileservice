@@ -6,15 +6,17 @@ services:
     container_name: mongodb
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_ROOT_USERNAME: agent1
+      MONGO_INITDB_ROOT_PASSWORD: 123
       MONGO_INITDB_DATABASE: melochord
     ports:
       - 27017:27017
     volumes:
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - mongobackend   
     cpu_period: 50000
-    cpu_quota: 25000    
+    cpu_quota: 25000   
   
   profileservice:
     depends_on:
